@@ -10,7 +10,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 	<head>
-		<meta content-equive="Content-type" content="text/html; charset=UTF-8">
+		<meta charset="UTF-8">
 		<title>nexseed-form02</title>
 	</head>
 	<body>
@@ -21,7 +21,19 @@
 		$sex        = htmlspecialchars($_POST['sex']);
 		$age        = htmlspecialchars($_POST['age']);
 
+		$works      = htmlspecialchars($_POST['each_works']);
+		if ($works == 'edit'){
+			$friend_id = htmlspecialchars($_POST['friend_id']);
+		}
+
+		$empty      = $firstname == '' || $id == '' || $age == '';
 		// 入力値の確認
+		if ($empty){
+			echo '<h3 style="color: red;">入力を確認してください。</h3>';
+		}else{
+			echo '<h3>こちらでお間違いないですか？</h3>';
+		}
+
 		if($firstname == '') {
 			echo '名前が入力されていません<br>';
 		}else{
@@ -56,23 +68,29 @@
 		}
 
 		//　入力した値が全て　”true”　の時にだけ　ＯＫボタンを表示
-		if ($firstname == '' || $id == '' || $age == ''){
+		if ($empty){
 			echo '<form method="post" action="">';
 			echo '<input type="button" onclick="history.back()" value="back">';
 			echo '</form>';
 		}else{
-			if (isset($_POST) && !empty($_POST)) {
+			echo '<form method="post" action="thanks.php">';
+			echo '<input type="button" onclick="history.back()" value="back">';
+			echo '<input type="submit" value="'.$works.'...">';
 
-				echo '<form method="post" action="friend_add.php">';
-				echo '<input type="button" onclick="history.back()" value="back">';
-				echo '<input type="button" type="submit">';
-				echo '</form>';
-
-				$sql_2 = 'INSERT INTO `friends_system`.`friend_table`(`prefecture_id`, `firstname`, `sex`, `age`) VALUES ("'.$id.'","'.$firstname.'","'.$sex .'","'.$age.'")';
-				$stmt_2 = $dbh->prepare($sql_2);
+			// hide values
+			echo '<input name="firstname" type="hidden" value="'.$firstname.'">';
+			echo '<input name="prefecture_no" type="hidden" value="'.$id.'">';
+			echo '<input name="sex" type="hidden" value="'.$sex.'">';
+			echo '<input name="age" type="hidden" value="'.$age.'">';
+			if ($works == 'edit'){
+				echo '<input name="friend_id" type="hidden" value="'.$friend_id.'">';
 			}
+			echo '<input name="each_works" type="hidden" value="'.$works.'">';
+
+			echo '</form>';
 		}
 	?>
-
 	</body>
 <html>
+<?php
+	$dbh = null;

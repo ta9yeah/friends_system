@@ -6,19 +6,8 @@
 	$password = '';
 	$dbh = new PDO($dsn, $user, $password);
 	$dbh->query('SET NAMES utf8');
-
-	// if (isset($_POST) && !empty($_POST)) {
-	// 	$firstname  = $_POST['firstname'];
-	// 	$id         = $_POST['prefecture_no'];
-	// 	$sex        = $_POST['sex'];
-	// 	$age        = $_POST['age'];
-
-	// 	$sql_2 = 'INSERT INTO `friends_system`.`friend_table`(`prefecture_id`, `firstname`, `sex`, `age`) VALUES ("'.$id.'","'.$firstname.'","'.$sex .'","'.$age.'")';
-	// 	$stmt_2 = $dbh->prepare($sql_2);
-	// 	$stmt_2->execute();
-	}
-
 ?>
+
 <!DOCTYPE html>
 <html lang="ja">
 	<head>
@@ -45,14 +34,21 @@
 						$stmt = $dbh->prepare($sql);
 						$stmt->execute();
 
+						$prefecture_no = $_GET['prefecture_id'];
+
 						// while
 						while(1) {
 							$rec = $stmt->fetch(PDO::FETCH_ASSOC);
 							if ($rec == false) {
 								break;
 							}
-							//var_dump($rec);
-							echo '<option value="'.$rec['id'].'">'.$rec['prefecture'].'</option>'; 
+							if($rec['id'] == $prefecture_no){
+								echo '<option value="'.$rec['id'].'" selected>';
+							}else{
+								echo '<option value="'.$rec['id'].'">';
+							}
+							echo $rec['prefecture'];
+							echo '</option>'; 
 							// !!!!! Fetch する事で　id も同時に引っ張れる !!!!!
 						}
 					?>
@@ -65,6 +61,7 @@
 				</select>
 				<p>年齢：</p>
 				<input name="age" type="text" style="width: 100px;"><br>
+				<input name="each_works" type="hidden" value="add">
 				<input type="submit" value="送信">
 				
 			</form>
